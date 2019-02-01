@@ -60,9 +60,25 @@ export const articlesRender = (stateIn) => {
 
   articles.forEach((el, index) => {
     const div = document.createElement('div');
-    div.classList.add('lead');
     articlesView.appendChild(div);
+    div.classList.add('lead');
     div.innerHTML = `${index + 1}. `;
-    div.appendChild(el);
+
+    const article = document.createElement('a');
+    article.setAttribute('href', el.link);
+    article.textContent = `${el.title} `;
+    div.appendChild(article);
+
+    const button = document.createElement('button');
+    button.classList.add('btn', 'btn-primary');
+    button.setAttribute('type', 'button');
+    button.setAttribute('data-toggle', 'modal');
+    button.setAttribute('data-target', '#exampleModal');
+    button.setAttribute('data-whatever', el.description);
+    button.textContent = 'Description';
+    div.appendChild(button);
+
+    const br = document.createElement('br');
+    articlesView.appendChild(br);
   });
 };

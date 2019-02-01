@@ -24,9 +24,12 @@ const addArticles = (document) => {
   const newArticles = [];
 
   documentArticles.forEach((el) => {
-    const article = document.createElement('a');
-    article.setAttribute('href', el.querySelector('link').textContent);
-    article.textContent = el.querySelector('title').textContent;
+    // const article = document.createElement('a');
+    const article = {
+      title: el.querySelector('title').textContent,
+      description: el.querySelector('description').textContent,
+      link: el.querySelector('link').textContent,
+    };
     newArticles.push(article);
   });
 
@@ -52,7 +55,7 @@ export const checkFeed = (url) => {
 
     axios.get(`${proxy}${url}`)
       .then((res) => {
-        const document = parser(res.data);
+        const document = parser(res.data, 'application/xml');
         if (document.querySelector('rss')) {
           state.inputState = 'clean';
           state.info = '';

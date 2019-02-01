@@ -1,3 +1,4 @@
+import $ from 'jquery';
 import * as watchers from './watchers';
 import getState from './state';
 import { inputHandler, formHandler } from './handlers';
@@ -17,6 +18,13 @@ export default () => {
   watchers.infoWatcher(state, 'info');
   watchers.feedsWatcher(state, 'feeds');
   watchers.articlesWatcher(state, 'articles');
+
+  $('#exampleModal').on('show.bs.modal', function func(event) {
+    const button = $(event.relatedTarget);
+    const recipient = button.data('whatever');
+    const modal = $(this);
+    modal.find('#mymodal').text(`${recipient}`);
+  });
 
   return state;
 };
