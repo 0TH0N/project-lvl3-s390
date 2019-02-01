@@ -1,6 +1,6 @@
 
 
-export default (data, format) => {
+export default (data) => {
   const parser = new DOMParser();
-  return parser.parseFromString(data, format);
+  return parser.parseFromString(data, 'application/xml');
 };

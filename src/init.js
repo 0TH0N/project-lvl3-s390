@@ -2,6 +2,7 @@ import $ from 'jquery';
 import * as watchers from './watchers';
 import getState from './state';
 import { inputHandler, formHandler } from './handlers';
+import { chekcUpdate } from './application';
 
 export default () => {
   // initialization states
@@ -25,6 +26,8 @@ export default () => {
     const modal = $(this);
     modal.find('#mymodal').html(`${recipient}`);
   });
+
+  window.setTimeout(chekcUpdate, 5000, state);
 
   return state;
 };
