@@ -1,13 +1,12 @@
+import { checkURL, checkFeed } from './application';
 
-
-export const inputHandler = (el, stateIn) => {
-  const state = stateIn;
-  state.inputValue = el.target.value;
+export const inputHandler = (el) => {
+  checkURL(el.target.value);
 };
 
 
-export const formHandler = (el, stateIn) => {
+export const formHandler = (el) => {
   el.preventDefault();
-  const state = stateIn;
-  state.enterLink = state.inputValue;
+  const url = document.getElementById('rsslink');
+  checkFeed(url.value);
 };

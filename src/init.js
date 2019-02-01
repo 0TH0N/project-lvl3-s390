@@ -8,13 +8,15 @@ export default () => {
 
   // initialization handlers (controllers)
   const rssLink = document.querySelector('#rsslink');
-  rssLink.addEventListener('input', el => inputHandler(el, state));
+  rssLink.addEventListener('input', el => inputHandler(el));
   const form = document.querySelector('#form-input');
-  form.addEventListener('submit', el => formHandler(el, state));
+  form.addEventListener('submit', el => formHandler(el));
 
   // initialization watchers
-  watchers.formWatcher(state, 'inputValue');
-  watchers.enterLinkWatcher(state, 'enterLink');
-  watchers.newFeedWatcher(state, 'newFeed');
-  watchers.newArticlesWatcher(state, 'newArticles');
+  watchers.inputStateWatcher(state, 'inputState');
+  watchers.infoWatcher(state, 'info');
+  watchers.feedsWatcher(state, 'feeds');
+  watchers.articlesWatcher(state, 'articles');
+
+  return state;
 };

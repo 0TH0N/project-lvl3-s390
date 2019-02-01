@@ -1,10 +1,6 @@
 export default () => ({
   inputState: 'clean',
-  inputValue: '',
-  enterLink: null,
-  info: null,
-  newFeed: null,
+  info: ' ',
   feeds: [],
-  newArticles: [],
   articles: [],
 });
