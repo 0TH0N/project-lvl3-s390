@@ -7,6 +7,7 @@ export const inputHandler = (el, stateIn) => {
 
 
 export const formHandler = (el, stateIn) => {
+  el.preventDefault();
   const state = stateIn;
   state.enterLink = state.inputValue;
 };
