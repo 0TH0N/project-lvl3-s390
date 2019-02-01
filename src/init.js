@@ -23,7 +23,7 @@ export default () => {
     const button = $(event.relatedTarget);
     const recipient = button.data('whatever');
     const modal = $(this);
-    modal.find('#mymodal').text(`${recipient}`);
+    modal.find('#mymodal').html(`${recipient}`);
   });
 
   return state;
