@@ -30,7 +30,11 @@ export const formHandle = (el, stateIn) => {
   const newURL = document.getElementById('rsslink').value;
   const feedsURL = state.feeds.map(elem => elem.link);
   if (feedsURL.includes(newURL)) {
-    state.info = 'This feed is formerly added';
+    state.modalMessage = {
+      title: 'Error',
+      description: 'This feed is formerly added.',
+      color: 'red',
+    };
     return;
   }
   state.inputState = 'blocked';
@@ -39,15 +43,27 @@ export const formHandle = (el, stateIn) => {
       const feed = parser(responce.data, newURL);
       if (!feed) {
         state.inputState = 'invalid';
-        state.info = 'This URL is not RSS feed';
+        state.modalMessage = {
+          title: 'Error',
+          description: 'This URL is not RSS feed.',
+          color: 'red',
+        };
         return;
       }
       state.feeds.push(feed);
       addArticles(feed, state);
       state.inputState = 'clean';
-      state.info = '';
+      state.modalMessage = {
+        title: 'Congratulations',
+        description: 'Feed successfully added.',
+        color: 'green',
+      };
     }).catch(() => {
       state.inputState = 'invalid';
-      state.info = 'Connection error';
+      state.modalMessage = {
+        title: 'Error',
+        description: 'Connection error.',
+        color: 'red',
+      };
     });
 };

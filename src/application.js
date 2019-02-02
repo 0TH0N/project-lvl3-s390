@@ -43,6 +43,7 @@ export const application = () => {
   const state = {
     inputState: 'clean',
     info: '',
+    modalMessage: {},
     feeds: [],
     articles: [],
   };
@@ -56,6 +57,7 @@ export const application = () => {
   // Initialization watchers
   WatchJS.watch(state, 'inputState', () => renderers.inputRender(state));
   WatchJS.watch(state, 'info', () => renderers.infoRender(state));
+  WatchJS.watch(state, 'modalMessage', () => renderers.modalRender(state));
   WatchJS.watch(state, 'feeds', () => renderers.feedsRender(state));
   WatchJS.watch(state, 'articles', () => renderers.articlesRender(state));
 
@@ -64,6 +66,7 @@ export const application = () => {
     const button = $(event.relatedTarget);
     const recipient = button.data('whatever');
     const modal = $(this);
+    modal.find('#exampleModalLabel').html('Description');
     modal.find('#mymodal').html(`${recipient}`);
   });
 

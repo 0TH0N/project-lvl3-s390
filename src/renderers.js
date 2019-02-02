@@ -1,3 +1,4 @@
+import $ from 'jquery';
 
 
 export const inputRender = (stateIn) => {
@@ -35,7 +36,24 @@ export const inputRender = (stateIn) => {
 
 export const infoRender = (stateIn) => {
   const info = document.querySelector('#info');
-  info.textContent = stateIn.info;
+  info.innerHTML = stateIn.info;
+};
+
+
+export const modalRender = (stateIn) => {
+  const mapping = {
+    red: 'alert-danger',
+    green: 'alert-success',
+  };
+
+  $('#exampleModal').modal('show');
+  const title = document.querySelector('#exampleModalLabel');
+  title.innerHTML = stateIn.modalMessage.title;
+  const description = document.querySelector('#mymodal');
+  description.innerHTML = '<div class="alert" id="message" role="alert">';
+  const textDiv = document.querySelector('#message');
+  textDiv.innerHTML = stateIn.modalMessage.description;
+  textDiv.classList.add(mapping[stateIn.modalMessage.color]);
 };
 
 
