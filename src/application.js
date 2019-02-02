@@ -1,42 +1,20 @@
-import isURL from 'validator/lib/isURL';
+import $ from 'jquery';
+import WatchJS from 'melanke-watchjs';
 import axios from 'axios';
-import state from './index';
 import parser from './parser';
+import * as renderers from './renderers';
+import { inputHandle, formHandle } from './handlers';
 
-export const checkURL = (url) => {
-  if (url === '' || url === null) {
-    state.inputState = 'clean';
-    state.info = '';
-    return;
-  }
-  if (isURL(url)) {
-    state.inputState = 'valid';
-    state.info = '';
-    return;
-  }
-  state.inputState = 'invalid';
-  state.info = 'Invalid URL';
+
+export const requestThroughProxy = (url) => {
+  const proxy = 'https://cors-anywhere.herokuapp.com/';
+  return axios.get(`${proxy}${url}`);
 };
 
 
-const generateNewArticles = (document) => {
-  const documentArticles = document.querySelectorAll('item');
-  const newArticles = [];
-
-  documentArticles.forEach((el) => {
-    const article = {
-      title: el.querySelector('title').textContent,
-      description: el.querySelector('description').textContent,
-      link: el.querySelector('link').textContent,
-    };
-    newArticles.push(article);
-  });
-
-  return newArticles;
-};
-
-const addArticles = (document) => {
-  const newArticles = generateNewArticles(document).reverse();
+export const addArticles = (feed, stateIn) => {
+  const state = stateIn;
+  const newArticles = feed.articles.reverse();
   const oldArticlesURL = state.articles.map(el => el.link);
   newArticles.forEach((newArticle) => {
     if (!oldArticlesURL.includes(newArticle.link)) {
@@ -46,55 +24,49 @@ const addArticles = (document) => {
 };
 
 
-const generateNewFeed = (document, url) => ({
-  title: document.querySelector('title').textContent,
-  description: document.querySelector('description').textContent,
-  link: url,
-});
-
-const addFeed = (document, url) => {
-  const newFeed = generateNewFeed(document, url);
-  state.feeds.push(newFeed);
-  addArticles(document);
+const addUpdate = (stateIn) => {
+  const state = stateIn;
+  const feedsURL = state.feeds.map(el => el.link);
+  const promiseArray = feedsURL.map(requestThroughProxy);
+  const promiseAll = Promise.all(promiseArray);
+  promiseAll
+    .then((responces) => {
+      const feeds = responces.map(res => parser(res.data));
+      feeds.forEach(feed => addArticles(feed, state));
+    });
+  window.setTimeout(addUpdate, 5000, stateIn);
 };
 
 
-export const checkFeed = (url) => {
-  const proxy = 'https://cors-anywhere.herokuapp.com/';
-  if (state.feeds.map(el => el.link).indexOf(url) === -1) {
-    state.inputState = 'blocked';
+export const application = () => {
+  // Initialization states
+  const state = {
+    inputState: 'clean',
+    info: '',
+    feeds: [],
+    articles: [],
+  };
 
-    axios.get(`${proxy}${url}`)
-      .then((res) => {
-        const document = parser(res.data);
-        if (document.querySelector('rss')) {
-          state.inputState = 'clean';
-          state.info = '';
-          addFeed(document, url);
-        } else {
-          state.inputState = 'invalid';
-          state.info = 'This URL is not RSS feed';
-        }
-      }).catch(() => {
-        state.inputState = 'invalid';
-        state.info = 'Connection error';
-      });
-  } else {
-    state.info = 'This feed is formerly added';
-  }
-};
+  // Initialization handlers (controllers)
+  const rssLink = document.querySelector('#rsslink');
+  rssLink.addEventListener('input', el => inputHandle(el, state));
+  const form = document.querySelector('#form-input');
+  form.addEventListener('submit', el => formHandle(el, state));
 
+  // Initialization watchers
+  WatchJS.watch(state, 'inputState', () => renderers.inputRender(state));
+  WatchJS.watch(state, 'info', () => renderers.infoRender(state));
+  WatchJS.watch(state, 'feeds', () => renderers.feedsRender(state));
+  WatchJS.watch(state, 'articles', () => renderers.articlesRender(state));
 
-export const chekcUpdate = (stateIn) => {
-  const proxy = 'https://cors-anywhere.herokuapp.com/';
-  const { feeds } = stateIn;
-  const feedsURL = feeds.map(el => el.link);
-  feedsURL.forEach((feedURL) => {
-    axios.get(`${proxy}${feedURL}`)
-      .then((res) => {
-        const document = parser(res.data);
-        addArticles(document);
-      });
+  // For modal window
+  $('#exampleModal').on('show.bs.modal', function func(event) {
+    const button = $(event.relatedTarget);
+    const recipient = button.data('whatever');
+    const modal = $(this);
+    modal.find('#mymodal').html(`${recipient}`);
   });
-  window.setTimeout(chekcUpdate, 5000, stateIn);
+
+  // Auto-update articles from feeds
+  window.setTimeout(addUpdate, 5000, state);
 };
