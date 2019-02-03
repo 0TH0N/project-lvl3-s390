@@ -29,9 +29,9 @@ export const addFeed = (stateIn, feed, newURL) => {
 
 export const addArticles = (stateIn, feed) => {
   const state = stateIn;
-  const newArticles = feed.articles;
-  const oldArticles = state.articles;
-  state.articles = _.unionBy(newArticles, oldArticles, 'link');
+  const newArticles = feed.articles.reverse();
+  const oldArticles = state.articles.reverse();
+  state.articles = _.unionBy(oldArticles, newArticles, 'link').reverse();
 };
 
 
