@@ -3,44 +3,44 @@ import * as app from './application';
 import parse from './parser';
 
 
-export const inputHandle = (el, formState) => {
+export const handleInput = (el, stateIn) => {
   const url = el.target.value;
+  const state = stateIn;
 
   if (url === '' || url === null) {
-    app.setFormState('clean', '', formState);
+    app.setFormState(state, 'clean', '');
     return;
   }
 
   if (isURL(url)) {
-    app.setFormState('valid', '', formState);
+    app.setFormState(state, 'valid', '');
     return;
   }
 
-  app.setFormState('invalid', 'Invalid URL', formState);
+  app.setFormState(state, 'invalid', 'Invalid URL');
 };
 
 
-export const formHandle = (el, formState, feedsState) => {
+export const handleForm = (el, stateIn) => {
   el.preventDefault();
+  const state = stateIn;
   const formData = new FormData(el.target);
   const newURL = formData.get('inputURL');
-  if (feedsState.feedsURL.includes(newURL)) {
-    app.setFormState('invalid', 'This feed is formerly added.', formState);
+  if (state.feedsURL.includes(newURL)) {
+    app.setFormState(state, 'invalid', 'This feed is formerly added.');
     return;
   }
-  app.setFormState('blocked', 'loading...', formState);
+  app.setFormState(state, 'blocked', 'loading...');
   app.requestThroughProxy(newURL)
     .then((responce) => {
       try {
         const feed = parse(responce.data);
-        app.addFeed(feed, feedsState, newURL);
-        app.addArticles(feed, feedsState);
-        app.setFormState('clean', 'Feed successfully added.', formState);
+        app.addFeed(state, feed, newURL);
+        app.addArticles(state, feed);
+        app.setFormState(state, 'clean', 'Feed successfully added.');
       } catch
       (err) {
-        app.setFormState('invalid', err.message, formState);
+        app.setFormState(state, 'invalid', err.message);
       }
-    }).catch(() => {
-      app.setFormState('invalid', 'Connection error.', formState);
-    });
+    }).catch(() => app.setFormState(state, 'invalid', 'Connection error.'));
 };

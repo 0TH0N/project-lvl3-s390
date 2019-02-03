@@ -3,7 +3,7 @@
 export default (data) => {
   const domParser = new DOMParser();
   const dom = domParser.parseFromString(data, 'application/xml');
-  // Return null (error) when "data" is not XML-RSS data
+  // throw error when "data" is not XML-RSS data
   if (!dom.querySelector('rss')) {
     throw new Error('This address is not RSS feed.');
   }
