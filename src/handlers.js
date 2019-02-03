@@ -1,69 +1,46 @@
 import isURL from 'validator/lib/isURL';
-import { addArticles, requestThroughProxy } from './application';
-import parser from './parser';
+import * as app from './application';
+import parse from './parser';
 
 
-export const inputHandle = (el, stateIn) => {
-  const state = stateIn;
+export const inputHandle = (el, formState) => {
   const url = el.target.value;
 
   if (url === '' || url === null) {
-    state.inputState = 'clean';
-    state.info = '';
+    app.setFormState('clean', '', formState);
     return;
   }
 
   if (isURL(url)) {
-    state.inputState = 'valid';
-    state.info = '';
+    app.setFormState('valid', '', formState);
     return;
   }
 
-  state.inputState = 'invalid';
-  state.info = 'Invalid URL';
+  app.setFormState('invalid', 'Invalid URL', formState);
 };
 
 
-export const formHandle = (el, stateIn) => {
+export const formHandle = (el, formState, feedsState) => {
   el.preventDefault();
-  const state = stateIn;
-  const newURL = document.getElementById('rsslink').value;
-  const feedsURL = state.feeds.map(elem => elem.link);
-  if (feedsURL.includes(newURL)) {
-    state.modalMessage = {
-      title: 'Error',
-      description: 'This feed is formerly added.',
-      color: 'red',
-    };
+  const formData = new FormData(el.target);
+  const newURL = formData.get('inputURL');
+  if (feedsState.feedsURL.includes(newURL)) {
+    app.setFormState('invalid', 'This feed is formerly added.', formState);
     return;
   }
-  state.inputState = 'blocked';
-  requestThroughProxy(newURL)
+  app.setFormState('blocked', 'loading...', formState);
+  app.requestThroughProxy(newURL)
     .then((responce) => {
-      const feed = parser(responce.data, newURL);
-      if (!feed) {
-        state.inputState = 'invalid';
-        state.modalMessage = {
-          title: 'Error',
-          description: 'This URL is not RSS feed.',
-          color: 'red',
-        };
-        return;
+      try {
+        const feed = parse(responce.data);
+        app.addFeed(feed, feedsState, newURL);
+        app.addArticles(feed, feedsState);
+        app.setFormState('clean', 'Feed successfully added.', formState);
+      } catch
+      (err) {
+        app.setFormState('invalid', err.message, formState);
       }
-      state.feeds.push(feed);
-      addArticles(feed, state);
-      state.inputState = 'clean';
-      state.modalMessage = {
-        title: 'Congratulations',
-        description: 'Feed successfully added.',
-        color: 'green',
-      };
     }).catch(() => {
-      state.inputState = 'invalid';
-      state.modalMessage = {
-        title: 'Error',
-        description: 'Connection error.',
-        color: 'red',
-      };
+      app.setFormState('invalid', 'Connection error.', formState);
     });
 };

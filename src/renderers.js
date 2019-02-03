@@ -1,9 +1,10 @@
-import $ from 'jquery';
 
 
-export const inputRender = (stateIn) => {
+export const formRender = (formState) => {
   const input = document.querySelector('#rsslink');
   const button = document.querySelector('#button');
+  const info = document.querySelector('#info');
+  info.innerHTML = formState.info;
 
   const mapping = {
     clean: () => {
@@ -30,30 +31,7 @@ export const inputRender = (stateIn) => {
     },
   };
 
-  mapping[stateIn.inputState]();
-};
-
-
-export const infoRender = (stateIn) => {
-  const info = document.querySelector('#info');
-  info.innerHTML = stateIn.info;
-};
-
-
-export const modalRender = (stateIn) => {
-  const mapping = {
-    red: 'alert-danger',
-    green: 'alert-success',
-  };
-
-  $('#exampleModal').modal('show');
-  const title = document.querySelector('#exampleModalLabel');
-  title.innerHTML = stateIn.modalMessage.title;
-  const description = document.querySelector('#mymodal');
-  description.innerHTML = '<div class="alert" id="message" role="alert">';
-  const textDiv = document.querySelector('#message');
-  textDiv.innerHTML = stateIn.modalMessage.description;
-  textDiv.classList.add(mapping[stateIn.modalMessage.color]);
+  mapping[formState.inputState]();
 };
 
 

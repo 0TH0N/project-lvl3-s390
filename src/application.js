@@ -1,7 +1,7 @@
 import $ from 'jquery';
 import WatchJS from 'melanke-watchjs';
 import axios from 'axios';
-import parser from './parser';
+import parse from './parser';
 import * as renderers from './renderers';
 import { inputHandle, formHandle } from './handlers';
 
@@ -12,54 +12,67 @@ export const requestThroughProxy = (url) => {
 };
 
 
-export const addArticles = (feed, stateIn) => {
+export const setFormState = (inputState, info, stateIn) => {
   const state = stateIn;
+  state.inputState = inputState;
+  state.info = info;
+};
+
+
+export const addFeed = (feed, feedsStateIn, newURL) => {
+  const state = feedsStateIn;
+  state.feeds.push(feed);
+  state.feedsURL.push(newURL);
+};
+
+
+export const addArticles = (feed, feedsStateIn) => {
+  const feedsState = feedsStateIn;
   const newArticles = feed.articles.reverse();
-  const oldArticlesURL = state.articles.map(el => el.link);
+  const oldArticlesURL = feedsState.articles.map(el => el.link);
   newArticles.forEach((newArticle) => {
     if (!oldArticlesURL.includes(newArticle.link)) {
-      state.articles.unshift(newArticle);
+      feedsState.articles.unshift(newArticle);
     }
   });
 };
 
 
-const addUpdate = (stateIn) => {
-  const state = stateIn;
-  const feedsURL = state.feeds.map(el => el.link);
-  const promiseArray = feedsURL.map(requestThroughProxy);
+const addUpdate = (feedsState) => {
+  const promiseArray = feedsState.feedsURL.map(requestThroughProxy);
   const promiseAll = Promise.all(promiseArray);
   promiseAll
     .then((responces) => {
-      const feeds = responces.map(res => parser(res.data));
-      feeds.forEach(feed => addArticles(feed, state));
+      const feeds = responces.map(res => parse(res.data));
+      feeds.forEach(feed => addArticles(feed, feedsState));
     });
-  window.setTimeout(addUpdate, 5000, stateIn);
+  window.setTimeout(addUpdate, 5000, feedsState);
 };
 
 
 export const application = () => {
   // Initialization states
-  const state = {
+  const formState = {
     inputState: 'clean',
     info: '',
-    modalMessage: {},
+  };
+
+  const feedsState = {
+    feedsURL: [],
     feeds: [],
     articles: [],
   };
 
   // Initialization handlers (controllers)
   const rssLink = document.querySelector('#rsslink');
-  rssLink.addEventListener('input', el => inputHandle(el, state));
+  rssLink.addEventListener('input', el => inputHandle(el, formState));
   const form = document.querySelector('#form-input');
-  form.addEventListener('submit', el => formHandle(el, state));
+  form.addEventListener('submit', el => formHandle(el, formState, feedsState));
 
   // Initialization watchers
-  WatchJS.watch(state, 'inputState', () => renderers.inputRender(state));
-  WatchJS.watch(state, 'info', () => renderers.infoRender(state));
-  WatchJS.watch(state, 'modalMessage', () => renderers.modalRender(state));
-  WatchJS.watch(state, 'feeds', () => renderers.feedsRender(state));
-  WatchJS.watch(state, 'articles', () => renderers.articlesRender(state));
+  WatchJS.watch(formState, 'inputState', () => renderers.formRender(formState));
+  WatchJS.watch(feedsState, 'feeds', () => renderers.feedsRender(feedsState));
+  WatchJS.watch(feedsState, 'articles', () => renderers.articlesRender(feedsState));
 
   // For modal window
   $('#exampleModal').on('show.bs.modal', function func(event) {
@@ -71,5 +84,5 @@ export const application = () => {
   });
 
   // Auto-update articles from feeds
-  window.setTimeout(addUpdate, 5000, state);
+  window.setTimeout(addUpdate, 5000, feedsState);
 };

@@ -1,11 +1,11 @@
 
 
-export default (data, url = null) => {
+export default (data) => {
   const domParser = new DOMParser();
   const dom = domParser.parseFromString(data, 'application/xml');
   // Return null (error) when "data" is not XML-RSS data
   if (!dom.querySelector('rss')) {
-    return null;
+    throw new Error('This address is not RSS feed.');
   }
   // Get articles from DOM
   const items = dom.querySelectorAll('item');
@@ -22,7 +22,6 @@ export default (data, url = null) => {
   const feed = {
     title: dom.querySelector('title').textContent,
     description: dom.querySelector('description').textContent,
-    link: url,
     articles,
   };
   return feed;
