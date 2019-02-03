@@ -38,8 +38,7 @@ export const handleForm = (el, stateIn) => {
         app.addFeed(state, feed, newURL);
         app.addArticles(state, feed);
         app.setFormState(state, 'clean', 'Feed successfully added.');
-      } catch
-      (err) {
+      } catch (err) {
         app.setFormState(state, 'invalid', err.message);
       }
     }).catch(() => app.setFormState(state, 'invalid', 'Connection error.'));
