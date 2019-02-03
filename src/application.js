@@ -44,7 +44,7 @@ const addUpdate = (stateIn) => {
       const feeds = responces.map(res => parse(res.data));
       feeds.forEach(feed => addArticles(state, feed));
     });
-  window.setTimeout(addUpdate, 5000, state);
+  setTimeout(addUpdate, 5000, state);
 };
 
 
@@ -79,5 +79,5 @@ export const application = () => {
   });
 
   // Auto-update articles from feeds
-  window.setTimeout(addUpdate, 5000, state);
+  setTimeout(addUpdate, 5000, state);
 };
