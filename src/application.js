@@ -12,10 +12,10 @@ export const requestThroughProxy = (url) => {
 };
 
 
-export const setFormState = (inputState, info, stateIn) => {
-  const state = stateIn;
-  state.inputState = inputState;
-  state.info = info;
+export const setFormState = (inputState, info, formStateIn) => {
+  const formState = formStateIn;
+  formState.inputState = inputState;
+  formState.info = info;
 };
 
 
