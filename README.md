@@ -7,7 +7,7 @@ This is readme for my training project "RSSReader" in Hexlet courses.
 https://rssreader0th0n.surge.sh
 
 
-For testing please use this URL's:
-http://lorem-rss.herokuapp.com/feed?unit=second
-http://rss.cnn.com/rss/cnn_topstories.rss
+For testing please use this URL's:  
+http://lorem-rss.herokuapp.com/feed?unit=second  
+http://rss.cnn.com/rss/cnn_topstories.rss  
 http://newsrss.bbc.co.uk/rss/newsonline_world_edition/americas/rss.xml
