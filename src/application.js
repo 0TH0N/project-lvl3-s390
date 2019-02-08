@@ -76,7 +76,7 @@ export const application = () => {
   form.addEventListener('submit', el => handleForm(el, state));
 
   // Initialization watchers
-  WatchJS.watch(state, 'inputState', () => renderers.formRender(state));
+  WatchJS.watch(state, ['inputState', 'info'], () => renderers.formRender(state));
   WatchJS.watch(state, 'feeds', () => renderers.feedsRender(state));
   WatchJS.watch(state, 'articles', () => renderers.articlesRender(state));
   WatchJS.watch(state, 'modalMessage', () => renderers.modalRender(state));
