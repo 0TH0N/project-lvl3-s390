@@ -1,3 +1,4 @@
+import $ from 'jquery';
 
 
 export const formRender = (formState) => {
@@ -77,4 +78,21 @@ export const articlesRender = (stateIn) => {
     const br = document.createElement('br');
     articlesView.appendChild(br);
   });
+};
+
+
+export const modalRender = (stateIn) => {
+  const mapping = {
+    red: 'alert-danger',
+    green: 'alert-success',
+  };
+
+  $('#exampleModal').modal('show');
+  const title = document.querySelector('#exampleModalLabel');
+  title.innerHTML = stateIn.modalMessage.title;
+  const description = document.querySelector('#mymodal');
+  description.innerHTML = '<div class="alert" id="message" role="alert">';
+  const textDiv = document.querySelector('#message');
+  textDiv.innerHTML = stateIn.modalMessage.description;
+  textDiv.classList.add(mapping[stateIn.modalMessage.color]);
 };

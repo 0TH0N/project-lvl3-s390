@@ -28,6 +28,7 @@ export const handleForm = (el, stateIn) => {
   const newURL = formData.get('inputURL');
   if (state.feedsURL.includes(newURL)) {
     app.setFormState(state, 'invalid', 'This feed is formerly added.');
+    app.setModalMessage(state, 'red', 'Error', 'This feed is formerly added.');
     return;
   }
   app.setFormState(state, 'blocked', 'loading...');
@@ -37,9 +38,14 @@ export const handleForm = (el, stateIn) => {
         const feed = parse(responce.data);
         app.addFeed(state, feed, newURL);
         app.addArticles(state, feed);
-        app.setFormState(state, 'clean', 'Feed successfully added.');
+        app.setFormState(state, 'clean', '');
+        app.setModalMessage(state, 'green', 'Successfull', 'Feed successfully added.');
       } catch (err) {
         app.setFormState(state, 'invalid', err.message);
+        app.setModalMessage(state, 'red', 'Error', err.message);
       }
-    }).catch(() => app.setFormState(state, 'invalid', 'Connection error.'));
+    }).catch(() => {
+      app.setFormState(state, 'invalid', 'Connection error.');
+      app.setModalMessage(state, 'red', 'Error', 'Connection error.');
+    });
 };

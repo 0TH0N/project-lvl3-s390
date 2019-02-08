@@ -20,6 +20,16 @@ export const setFormState = (stateIn, inputState, info) => {
 };
 
 
+export const setModalMessage = (stateIn, color, title, description) => {
+  const state = stateIn;
+  state.modalMessage = {
+    color,
+    title,
+    description,
+  };
+};
+
+
 export const addFeed = (stateIn, feed, newURL) => {
   const state = stateIn;
   state.feeds.push(feed);
@@ -56,6 +66,7 @@ export const application = () => {
     feedsURL: [],
     feeds: [],
     articles: [],
+    modalMessage: {},
   };
 
   // Initialization handlers (controllers)
@@ -68,6 +79,7 @@ export const application = () => {
   WatchJS.watch(state, 'inputState', () => renderers.formRender(state));
   WatchJS.watch(state, 'feeds', () => renderers.feedsRender(state));
   WatchJS.watch(state, 'articles', () => renderers.articlesRender(state));
+  WatchJS.watch(state, 'modalMessage', () => renderers.modalRender(state));
 
   // For modal window
   $('#exampleModal').on('show.bs.modal', function func(event) {
