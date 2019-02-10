@@ -46,6 +46,6 @@ export const handleForm = (el, stateIn) => {
       }
     }).catch(() => {
       app.setFormState(state, 'invalid', 'Connection error.');
-      app.setModalMessage(state, 'red', 'Error', 'Connection error.');
+      app.setModalMessage(state, 'red', 'Error', 'Connection error.<br>Possibly, CORS-proxy not work now moment or buggy.');
     });
 };
