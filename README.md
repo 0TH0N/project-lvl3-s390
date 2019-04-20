@@ -6,13 +6,15 @@ Important learned themes:
 
 1) MVC pattern programming.
 
-2) Ajax-requests.
+2) Promises.
 
-3) Observers.
+3) Ajax-requests.
 
-4) JQuery.
+4) Observers.
 
-5) Bootstrap.
+5) JQuery.
+
+6) Bootstrap.
 
 
 [![Maintainability](https://api.codeclimate.com/v1/badges/2b0cdc86df597ce4a238/maintainability)](https://codeclimate.com/github/0TH0N/project-lvl3-s390/maintainability)
