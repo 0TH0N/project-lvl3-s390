@@ -8,9 +8,11 @@ Important learned themes:
 
 2) Ajax-requests.
 
-3) JQuery.
+3) Observers.
 
-4) Bootstrap.
+4) JQuery.
+
+5) Bootstrap.
 
 
 [![Maintainability](https://api.codeclimate.com/v1/badges/2b0cdc86df597ce4a238/maintainability)](https://codeclimate.com/github/0TH0N/project-lvl3-s390/maintainability)
